@@ -1,0 +1,225 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Analysis paralysis killer</title>
+
+    <script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>
+
+    <style>
+        .clearfix::after {
+            content: "";
+            display: block;
+            clear: both;
+        }
+        .bag {
+            border: 1px solid black;
+            display: block;
+            padding: 0.25em;
+        }
+        .dice {
+            width: fit-content;
+            display: inline-block;
+            border: 1px solid black;
+            margin-right: 0.25em;
+            padding: 0.125em;
+            border-radius: 2px;
+        }
+        .remove-dice {
+            font-size: 70%;
+            width: 1.25em;
+            height: 1.25em;
+            line-height: 1em;
+            text-align: center;
+            margin: -0.5em;
+            padding: 0 0.25em;
+            border: 1px solid gray;
+            background: darkgray;
+            color: white;
+            cursor: pointer;
+            border-radius: 50%;
+            display: inline-block;
+            vertical-align: top;
+            box-shadow: 1px 1px 2px 0 gray;
+        }
+        .roll-all {
+            font-size: 150%;
+            width: 4em;
+            height: 3em;
+            line-height: 2em;
+            text-align: center;
+            color: gold;
+            background: crimson;
+            cursor: grabbing;
+            border-radius: 15%;
+            border: none;
+            box-shadow: 2px 2px 4px 1px gray;
+            float:right;
+        }
+        .top-bar {
+            margin-bottom: 0.5em;
+        }
+
+        
+        .roll-all:hover{
+            animation: blinkingText 0.6s infinite;
+        }
+        @keyframes blinkingText{
+            0%{     color: gold; background: crimson    }
+            100%{    color: transparent; background: red     }
+        }/*Cirelli stai maaaaaaale! :-)*/
+
+        .bag-result {
+            display: inline-block;
+        }
+    </style>
+</head>
+<body>
+    <div id="app">
+        <h1>The Cheater Guide to Tabletops for stay at homers</h1>
+        <div class="top-bar clearfix">
+            <button class="add-bag" @click="addBag">+</button>
+            <span v-if="rolledAll">{{ totalResult }}</span>
+            <button class="roll-all" @click="rollAll">POW!</button>
+        </div>
+        <div class="bag-holder">
+            <!--div v-for="(bag, i) in bags" :key="bag.id" class="bag">
+                <button @click="removeBag(i)">&times;</button>
+               
+                <dice-box v-for="(die, i) in bag.dice" :die="die" :key="die.id" @remove="removeDice(bag, i)"></dice-box>
+
+                <button @click="showAddDiceDialog(bag)">+</button>
+                <button @click="roll(bag)">Roll</button>
+                <div class="bag-result">{{ bag.result }}</div>
+            </div-->
+            <dice-bag v-for="(bag, i) in bags"
+                :key="bag.id"
+                :bag="bag"
+                @remove="removeBag(i)"
+                @roll="">
+            </dice-bag>
+        </div>
+    </div>
+
+    <script>
+        Vue.component("dice-box", {
+            template: `
+                <div class="dice" :style="{background: die.color}">
+                    {{ die.number }}d{{ die.faces }}
+                    <button class="remove-dice" @click="removeMe">&times;</button>
+                </div>`,
+            props: {
+                die: {
+                    required: true
+                }
+            },
+            methods: {
+                removeMe() {
+                    this.$emit("remove");
+                },
+            },
+        });
+
+        Vue.component("dice-bag", {
+            template: `
+                <div class="bag">
+                    <button @click="removeMe">&times;</button>
+                    <dice-box v-for="(die, i) in bag.dice" :die="die" :key="die.id" @remove="removeDice(i)"></dice-box>
+
+                    <button @click="showAddDiceDialog">+</button>
+                    <button @click="roll">Roll</button>
+                    <div class="bag-result">{{ result }}</div>
+                </div>`,
+            props: [ "bag" ],
+            data() {
+                return {
+                    result: "",
+                    lastID: 0,
+                };
+            },
+            created() {
+                this.$watch("bag.shouldRoll", shouldRoll => {
+                    if (shouldRoll) {
+                        shouldRoll = false;
+                        this.roll();
+                    }
+                });
+            },
+            methods: {
+                removeMe() {
+                    this.$emit("remove");
+                },
+                removeDice(i) {
+                    this.bag.dice.splice(i, 1);
+                },
+                showAddDiceDialog(bag){
+                    //TODO: mostrare la finestra!
+                    this.bag.dice.push({
+                        id: this.lastID +1,
+                        faces: 1 + Math.random() * 20 | 0,
+                        number: 1 + Math.random() * 5 | 0,
+                        color: '#' + ((1<<24)*Math.random()|0).toString(16),
+                    });
+
+                    // TODO: add color to colorSet
+                    // if (bag.dice[-1].)
+                    this.lastID++;
+                    this.rolledAll=false; // FIXME!!!
+                    this.result="";
+                },
+                roll() {
+                    this.result = this.bag.dice
+                        .map(d => this.rollDice(d.number, d.faces))
+                        .reduce((sum, r) => sum + r);
+                    this.$emit("rolled", this.id, this.result);
+                },
+                rollDice(number, faces) {
+                    let total = 0;
+                    for (let i = 0; i < number; i++) {
+                        total += 1 + Math.random() * faces |0;
+                    }
+                    return total;
+                },
+            },
+        });
+
+        const app = new Vue({
+            el: "#app",
+            data: {
+                bags: [
+                    {
+                        id: 0,
+                        dice: [],
+                        result : "",
+                        shouldRoll: false,
+                    }
+                ],
+                rolledAll : false,
+                colorSet: {
+                    6: '#ffff00',
+                }
+            },
+            computed: {
+                totalResult() {
+                    return this.bags.reduce((sum, b) => sum + b.result, 0);
+                },
+            },
+            methods: {
+                rollAll() {
+                    this.bags.forEach(console.log);
+                    this.bags.forEach(b => this.roll(b));
+                    this.rolledAll = true;
+                },
+                addBag() {
+                    this.bags.push({ id: ++this.lastID, dice: [], result: "", shouldRoll: false });
+                    this.rolledAll = false;
+                },
+                removeBag(i) {
+                    this.bags.splice(i, 1);
+                },
+            }
+        });
+    </script>
+</body>
+</html>
