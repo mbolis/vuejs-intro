@@ -29,7 +29,7 @@ export default {
 
 <style scoped>
 .round {
-    color: rgb(155, 137, 38);
+    color: green;
     background-color: lightsalmon;
     display: inline-block;
     width: 20%;
@@ -40,10 +40,12 @@ export default {
 .bar {
     display: inline-block;
     width: 50%;
+    height: 1.5em;
 }
 .bar span {
     height: 1em;
     display: inline-block;
     background: green;
+    vertical-align: middle;
 }
 </style>

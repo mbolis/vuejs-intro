@@ -3,15 +3,18 @@
     <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Gotu" />
     <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto" />
 
-    <div class="title">
-      <h1>The Cheater Guide to Tabletops for stay at homers</h1>
-    </div>
-    <nav class="nav">
-      <router-link class="nav-links" to="/">Home</router-link>
-      <router-link class="nav-links" to="/roller">Dice Roller</router-link>
-      <router-link class="nav-links" to="/risk">Risk Simulator</router-link>
-    </nav>
-    <router-view />
+    <header>
+      <h1 class="title">The Cheater Guide to Tabletops for stay at homers</h1>
+      <nav class="nav">
+        <router-link class="nav-links" to="/">Home</router-link>
+        <router-link class="nav-links" to="/roller">Dice Roller</router-link>
+        <router-link class="nav-links" to="/risk">Risk Simulator</router-link>
+        <router-link class="nav-links" to="/clock">Chess Board Clocks</router-link>
+      </nav>
+    </header>
+    <section class="main">
+      <router-view />
+    </section>
   </div>
 </template>
 
@@ -23,11 +26,8 @@ export default {
 
 <style>
 body {
+  margin: 0px;
   font-family: "Roboto", serif;
-}
-
-#app {
-  margin-top: 30;
 }
 
 .title {
@@ -47,5 +47,9 @@ body {
   padding-left: 1em;
   padding-right: 1em;
   border: 1px solid red;
+}
+
+.main {
+  padding: 0.5em;
 }
 </style>

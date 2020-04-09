@@ -1,16 +1,16 @@
 <template>
-  <div class="bag">
+  <div class="bag clearfix">
     <button class="remove-bag" @click="removeMe" title="Remove dice bag">&times;</button>
     <button class="show-add-dice-dialog" @click="showAddDiceDialog">+</button>
     <dice-box v-for="(die, i) in bag.dice" :die="die" :key="die.id" @remove="removeDice(i)"></dice-box>
-    <button @click="roll">Roll</button>
+    <button class="roll-button" @click="clickRoll">Roll</button>
     <div class="bag-result">{{ result }}</div>
   </div>
 </template>
 
 <script>
 import DiceBox from "./DiceBox.vue";
-import eventBus from "../event-bus";
+import { mapState } from "vuex";
 
 export default {
   name: "dice-bag",
@@ -22,11 +22,13 @@ export default {
       lastID: 0
     };
   },
-  created() {
-    eventBus.$on("rollAll", this.roll);
-  },
-  destroyed() {
-    eventBus.$off("rollAll", this.roll);
+  computed: mapState([
+    "rollCount"
+  ]),
+  watch: {
+      rollCount() {
+        this.roll();
+      }
   },
   methods: {
     removeMe() {
@@ -48,12 +50,16 @@ export default {
       // if (bag.dice[-1].)
       this.result = "";
     },
+    clickRoll() {
+        this.$store.commit("rollSingle");
+        this.roll();
+    },
     roll() {
       this.result = this.bag.dice
         .map(d => this.rollDice(d.number, d.faces))
         .reduce((sum, r) => sum + r, 0);
 
-      this.$emit("rolled", this.result);
+      this.$store.commit("postRoll", this.result);
     },
     rollDice(number, faces) {
       let total = 0;
@@ -74,6 +80,8 @@ export default {
 }
 .bag-result {
   display: inline-block;
+  float: right;
+  font: bold;
 }
 .remove-bag{
   width: 1.25em;
@@ -96,4 +104,7 @@ export default {
   margin-right: 5px;
 }
 
+.roll-button {
+  float: right;
+}
 </style>

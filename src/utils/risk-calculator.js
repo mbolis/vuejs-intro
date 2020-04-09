@@ -5,7 +5,7 @@ function Territory(color, tanks) {
 
 const roll = () => 1 + Math.random() * 6 | 0;
 const rollDice = n =>
-    Array.apply(null, Array(n)).map(roll).sort();
+    Array.apply(null, Array(Math.min(3, n))).map(roll).sort();
 
 const zip = (a1, a2) =>
     a1.map((x1, i) => [x1, a2[i]]).filter(xs => xs[1]);

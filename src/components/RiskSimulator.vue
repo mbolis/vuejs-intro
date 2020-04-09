@@ -25,7 +25,7 @@
     </div> 
 </template>
 <script>
-import analyze from "../risk-calculator";
+import analyze from "../utils/risk-calculator";
 import RiskRound from "./RiskRound";
 
 export default {

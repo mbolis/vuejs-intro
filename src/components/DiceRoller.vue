@@ -2,7 +2,7 @@
   <div>    
     <div class="top-bar clearfix">
       <button class="add-bag" @click="addBag">+</button>
-      <span v-if="rolledAll">{{ totalResult }}</span>
+      <span v-if="totalResult">{{ totalResult }}</span>
       <button class="roll-all" @click="rollAll">POW!</button>
     </div>
     <div class="bag-holder">
@@ -11,7 +11,6 @@
         :key="bag.id"
         :bag="bag"
         @remove="removeBag(i)"
-        @rolled="addRoll"
       ></dice-bag>
     </div>
   </div>
@@ -19,7 +18,7 @@
 
 <script>
 import DiceBag from "./DiceBag.vue";
-import eventBus from "../event-bus";
+//import eventBus from "../utils/event-bus";
 
 export default {
   components: { DiceBag },
@@ -32,29 +31,27 @@ export default {
           result: ""
         }
       ],
-      rolledAll: false,
-      rolls: [],
+      //rolledAll: false,
       lastID: 0
     };
   },
   computed: {
     totalResult() {
-      return this.rolledAll && this.rolls.reduce((sum, roll) => sum + roll, 0);
+      return this.$store.getters.totalRolled;
     }
   },
   methods: {
     rollAll() {
-      this.rolls.length = 0;
+      this.$store.commit("rollAll");
+      
+      /*
       eventBus.$emit("rollAll");
-      this.rolledAll = true;
-    },
-    addRoll(roll) {
-      this.rolledAll = false;
-      this.rolls.push(roll);
+      this.rolledAll = true;*/
     },
     addBag() {
       this.bags.push({ id: ++this.lastID, dice: [], result: "" });
-      this.rolledAll = false;
+      this.$store.commit("rollSingle");
+      //this.rolledAll = false;
     },
     removeBag(i) {
       this.bags.splice(i, 1);
