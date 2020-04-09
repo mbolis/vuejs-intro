@@ -1,108 +1,51 @@
 <template>
-  <div>
-    <h1>The Cheater Guide to Tabletops for stay at homers</h1>
-    <div class="top-bar clearfix">
-      <button class="add-bag" @click="addBag">+</button>
-      <span v-if="rolledAll">{{ totalResult }}</span>
-      <button class="roll-all" @click="rollAll">POW!</button>
+  <div id="app">
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Gotu" />
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto" />
+
+    <div class="title">
+      <h1>The Cheater Guide to Tabletops for stay at homers</h1>
     </div>
-    <div class="bag-holder">
-      <dice-bag
-        v-for="(bag, i) in bags"
-        :key="bag.id"
-        :bag="bag"
-        @remove="removeBag(i)"
-        @rolled="addRoll"
-      ></dice-bag>
-    </div>
+    <nav class="nav">
+      <router-link class="nav-links" to="/">Home</router-link>
+      <router-link class="nav-links" to="/roller">Dice Roller</router-link>
+      <router-link class="nav-links" to="/risk">Risk Simulator</router-link>
+    </nav>
+    <router-view />
   </div>
 </template>
 
 <script>
-import DiceBag from "./components/DiceBag.vue";
-import eventBus from "./event-bus";
-
 export default {
-  components: { DiceBag },
-  data() {
-    return {
-      bags: [
-        {
-          id: 0,
-          dice: [],
-          result: ""
-        }
-      ],
-      rolledAll: false,
-      rolls: [],
-      colorSet: {
-        6: "#ffff00"
-      },
-      lastID: 0
-    };
-  },
-  computed: {
-    totalResult() {
-      return this.rolledAll && this.rolls.reduce((sum, roll) => sum + roll, 0);
-    }
-  },
-  methods: {
-    rollAll() {
-      this.rolls.length = 0;
-      eventBus.$emit("rollAll");
-      this.rolledAll = true;
-    },
-    addRoll(roll) {
-      this.rolledAll = false;
-      this.rolls.push(roll);
-    },
-    addBag() {
-      this.bags.push({ id: ++this.lastID, dice: [], result: "" });
-      this.rolledAll = false;
-    },
-    removeBag(i) {
-      this.bags.splice(i, 1);
-    }
-  }
+  name: "App"
 };
 </script>
 
 <style>
-.clearfix::after {
-  content: "";
-  display: block;
-  clear: both;
+body {
+  font-family: "Roboto", serif;
 }
 
-.roll-all {
-  font-size: 150%;
-  width: 4em;
-  height: 3em;
-  line-height: 2em;
-  text-align: center;
-  color: gold;
-  background: crimson;
-  cursor: grabbing;
-  border-radius: 15%;
-  border: none;
-  box-shadow: 2px 2px 4px 1px gray;
-  float: right;
-}
-.top-bar {
-  margin-bottom: 0.5em;
+#app {
+  margin-top: 30;
 }
 
-.roll-all:hover {
-  animation: blinkingText 0.6s infinite;
+.title {
+  margin-top: 0px;
+  padding: 35px;
+  background-color: #343b43;
+  color: #d7d7d7;
+  font-family: "Gotu", serif;
 }
-@keyframes blinkingText {
-  0% {
-    color: gold;
-    background: crimson;
-  }
-  100% {
-    color: transparent;
-    background: red;
-  }
-} /*Cirelli stai maaaaaaale! :-)*/
+
+.nav {
+  margin: 15px;
+}
+
+.nav-links {
+  background-color: yellow;
+  padding-left: 1em;
+  padding-right: 1em;
+  border: 1px solid red;
+}
 </style>

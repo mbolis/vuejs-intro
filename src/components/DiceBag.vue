@@ -1,8 +1,8 @@
 <template>
   <div class="bag">
-    <button @click="removeMe">&times;</button>
+    <button class="remove-bag" @click="removeMe" title="Remove dice bag">&times;</button>
+    <button class="show-add-dice-dialog" @click="showAddDiceDialog">+</button>
     <dice-box v-for="(die, i) in bag.dice" :die="die" :key="die.id" @remove="removeDice(i)"></dice-box>
-    <button @click="showAddDiceDialog">+</button>
     <button @click="roll">Roll</button>
     <div class="bag-result">{{ result }}</div>
   </div>
@@ -52,7 +52,7 @@ export default {
       this.result = this.bag.dice
         .map(d => this.rollDice(d.number, d.faces))
         .reduce((sum, r) => sum + r, 0);
-      console.log(this.result);
+
       this.$emit("rolled", this.result);
     },
     rollDice(number, faces) {
@@ -75,4 +75,25 @@ export default {
 .bag-result {
   display: inline-block;
 }
+.remove-bag{
+  width: 1.25em;
+  height: 1.25em;
+  line-height: 1em;
+  text-align: center;
+  padding: 0 0.25em;
+  border: 1px solid gray;
+  background: darkred;
+  color: white;
+  cursor: pointer;
+  border-radius: 50%;
+  display: inline-block;
+  vertical-align: middle;
+  box-shadow: 1px 1px 2px 0 gray;
+  margin-right: 5px;
+}
+
+.show-add-dice-dialog {
+  margin-right: 5px;
+}
+
 </style>
