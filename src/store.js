@@ -3,7 +3,8 @@ import Vuex from "vuex";
 
 Vue.use(Vuex);
 
-export default new Vuex.Store({
+const dice = {
+    namespaced: true,
     state: {
         rolls: [],
         rollingAll: false,
@@ -26,4 +27,22 @@ export default new Vuex.Store({
             state.rollCount++;
         },
     },
+}
+
+const chess = {
+    namespaced: true,
+    state: {
+        status: "setup",
+    },
+    mutations:{
+        setStatus: (state, status) =>
+            state.status = status,
+    },
+}
+
+export default new Vuex.Store({
+    modules: {
+        dice,
+        chess,
+    }
 })

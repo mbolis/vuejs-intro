@@ -18,7 +18,6 @@
 
 <script>
 import DiceBag from "./DiceBag.vue";
-//import eventBus from "../utils/event-bus";
 
 export default {
   components: { DiceBag },
@@ -31,27 +30,21 @@ export default {
           result: ""
         }
       ],
-      //rolledAll: false,
       lastID: 0
     };
   },
   computed: {
     totalResult() {
-      return this.$store.getters.totalRolled;
+      return this.$store.getters["dice/totalRolled"];
     }
   },
   methods: {
     rollAll() {
-      this.$store.commit("rollAll");
-      
-      /*
-      eventBus.$emit("rollAll");
-      this.rolledAll = true;*/
+      this.$store.commit("dice/rollAll");
     },
     addBag() {
       this.bags.push({ id: ++this.lastID, dice: [], result: "" });
-      this.$store.commit("rollSingle");
-      //this.rolledAll = false;
+      this.$store.commit("dice/rollSingle");
     },
     removeBag(i) {
       this.bags.splice(i, 1);

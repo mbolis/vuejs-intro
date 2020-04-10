@@ -25,6 +25,16 @@ export default {
 </script>
 
 <style>
+
+/* Color palette: https://coolors.co/343b43-4b8f8c-ffc857-e9724c-c5283d */
+:root{
+--my-grey: rgba(52, 59, 67, 1);
+--my-blue: rgba(75, 143, 140, 1);
+--my-yellow: rgba(255, 200, 87, 1);
+--my-orange: rgba(233, 114, 76, 1);
+--my-red: rgba(197, 40, 61, 1);
+}
+
 body {
   margin: 0px;
   font-family: "Roboto", serif;
@@ -33,8 +43,8 @@ body {
 .title {
   margin-top: 0px;
   padding: 35px;
-  background-color: #343b43;
-  color: #d7d7d7;
+  background-color: var(--my-grey);
+  color: var(--my-yellow);
   font-family: "Gotu", serif;
 }
 
@@ -43,10 +53,10 @@ body {
 }
 
 .nav-links {
-  background-color: yellow;
+  background-color: var(--my-yellow);
   padding-left: 1em;
   padding-right: 1em;
-  border: 1px solid red;
+  border: 1px solid var(--my-red);
 }
 
 .main {

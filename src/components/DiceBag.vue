@@ -22,7 +22,7 @@ export default {
       lastID: 0
     };
   },
-  computed: mapState([
+  computed: mapState("dice",[
     "rollCount"
   ]),
   watch: {
@@ -51,7 +51,7 @@ export default {
       this.result = "";
     },
     clickRoll() {
-        this.$store.commit("rollSingle");
+        this.$store.commit("dice/rollSingle");
         this.roll();
     },
     roll() {
@@ -59,7 +59,7 @@ export default {
         .map(d => this.rollDice(d.number, d.faces))
         .reduce((sum, r) => sum + r, 0);
 
-      this.$store.commit("postRoll", this.result);
+      this.$store.commit("dice/postRoll", this.result);
     },
     rollDice(number, faces) {
       let total = 0;
