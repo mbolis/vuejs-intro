@@ -1,55 +1,24 @@
 <template>
-  <div>    
+  <div>
     <div class="top-bar clearfix">
       <button class="add-bag" @click="addBag">+</button>
-      <span v-if="totalResult">{{ totalResult }}</span>
+      <span v-if="rollingAll">{{ result }}</span>
       <button class="roll-all" @click="rollAll">POW!</button>
     </div>
     <div class="bag-holder">
-      <dice-bag
-        v-for="(bag, i) in bags"
-        :key="bag.id"
-        :bag="bag"
-        @remove="removeBag(i)"
-      ></dice-bag>
+      <dice-bag v-for="bag in bags" :key="bag.id" :bag="bag"></dice-bag>
     </div>
   </div>
 </template>
 
 <script>
+import { mapState, mapActions } from "vuex";
 import DiceBag from "./DiceBag.vue";
 
 export default {
   components: { DiceBag },
-  data() {
-    return {
-      bags: [
-        {
-          id: 0,
-          dice: [],
-          result: ""
-        }
-      ],
-      lastID: 0
-    };
-  },
-  computed: {
-    totalResult() {
-      return this.$store.getters["dice/totalRolled"];
-    }
-  },
-  methods: {
-    rollAll() {
-      this.$store.commit("dice/rollAll");
-    },
-    addBag() {
-      this.bags.push({ id: ++this.lastID, dice: [], result: "" });
-      this.$store.commit("dice/rollSingle");
-    },
-    removeBag(i) {
-      this.bags.splice(i, 1);
-    }
-  }
+  computed: mapState("dice", ["bags", "result", "rollingAll"]),
+  methods: mapActions("dice", ["addBag", "rollAll"]),
 };
 </script>
 
@@ -90,5 +59,5 @@ export default {
     color: transparent;
     background: red;
   }
-} /* Andra stai maaaaaaale! :-)*/
+} /* Andrea stai maaaaaaale! :-)*/
 </style>

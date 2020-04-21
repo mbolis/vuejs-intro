@@ -1,16 +1,15 @@
 <template>
   <div class="bag clearfix">
-    <button class="remove-bag" @click="removeMe" title="Remove dice bag">&times;</button>
+    <button class="remove-bag" @click="removeBag" title="Remove dice bag">&times;</button>
     <button class="show-add-dice-dialog" @click="showAddDiceDialog">+</button>
     <dice-box v-for="(die, i) in bag.dice" :die="die" :key="die.id" @remove="removeDice(i)"></dice-box>
     <button class="roll-button" @click="clickRoll">Roll</button>
-    <div class="bag-result">{{ result }}</div>
+    <div class="bag-result" v-show="bag.result !== null">{{ bag.result }}</div>
   </div>
 </template>
 
 <script>
 import DiceBox from "./DiceBox.vue";
-import { mapState } from "vuex";
 
 export default {
   name: "dice-bag",
@@ -18,25 +17,10 @@ export default {
   props: ["bag"],
   data() {
     return {
-      result: "",
       lastID: 0
     };
   },
-  computed: mapState("dice",[
-    "rollCount"
-  ]),
-  watch: {
-      rollCount() {
-        this.roll();
-      }
-  },
   methods: {
-    removeMe() {
-      this.$emit("remove");
-    },
-    removeDice(i) {
-      this.bag.dice.splice(i, 1);
-    },
     showAddDiceDialog() {
       //TODO: mostrare la finestra!
       this.bag.dice.push({
@@ -51,22 +35,10 @@ export default {
       this.result = "";
     },
     clickRoll() {
-        this.$store.commit("dice/rollSingle");
-        this.roll();
+        this.$store.dispatch("dice/rollSingle", this.bag.id)
     },
-    roll() {
-      this.result = this.bag.dice
-        .map(d => this.rollDice(d.number, d.faces))
-        .reduce((sum, r) => sum + r, 0);
-
-      this.$store.commit("dice/postRoll", this.result);
-    },
-    rollDice(number, faces) {
-      let total = 0;
-      for (let i = 0; i < number; i++) {
-        total += (1 + Math.random() * faces) | 0;
-      }
-      return total;
+    removeBag(){
+        this.$store.dispatch("dice/removeBag", this.bag.id)
     }
   }
 };
@@ -77,6 +49,7 @@ export default {
   border: 1px solid black;
   display: block;
   padding: 0.25em;
+  margin: 0.25em;
 }
 .bag-result {
   display: inline-block;
